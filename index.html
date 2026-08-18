@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>品鉴书香</title>
+<style>
+  :root{
+    --ink:#3d2817;
+    --paper:#faf6f0;
+    --paper-2:#f3ece0;
+    --gold:#b8860b;
+    --gold-soft:#d4a93a;
+    --c-cn:#b03a2e;
+    --c-cn-bg:#fbeee9;
+    --c-fg:#2c5f8a;
+    --c-fg-bg:#e9f1f7;
+    --c-ai:#0e8a7a;
+    --c-ai-bg:#e4f4f1;
+    --c-pj:#c1440e;
+    --c-pj-bg:#fbeee5;
+    --star:#f5b301;
+    --shadow:0 6px 24px rgba(61,40,23,.12);
+    --serif:"Noto Serif SC","STSong","SimSun","Songti SC",serif;
+    --sans:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.75;-webkit-font-smoothing:antialiased;}
+
+  /* 导航 */
+  .nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);background:rgba(250,246,240,.85);border-bottom:1px solid rgba(184,134,11,.25);}
+  .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px;flex-wrap:wrap;}
+  .brand{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:.15em;color:var(--ink);display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .brand .seal{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:6px;background:var(--c-cn);color:#fff;font-size:15px;box-shadow:0 2px 6px rgba(176,58,46,.4);}
+  .nav-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .nav-links{display:flex;gap:6px;flex-wrap:wrap;}
+  .nav-links a{text-decoration:none;color:var(--ink);font-size:15px;padding:8px 14px;border-radius:999px;transition:.25s;opacity:.7;cursor:pointer;}
+  .nav-links a:hover{background:var(--paper-2);opacity:1;}
+  .nav-btn{border:1px solid rgba(184,134,11,.4);background:transparent;color:var(--ink);padding:8px 16px;border-radius:999px;cursor:pointer;font-size:14px;font-family:inherit;transition:.25s;display:inline-flex;align-items:center;gap:6px;}
+  .nav-btn:hover{background:var(--gold);color:#fff;}
+  .nav-btn.primary{background:var(--c-cn);color:#fff;border-color:var(--c-cn);}
+  .nav-btn.primary:hover{background:#8e2e24;}
+  .user-chip{display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:6px 14px;border-radius:999px;background:var(--paper-2);cursor:pointer;}
+  .user-chip .avatar{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;}
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;padding:80px 24px 90px;text-align:center;background:radial-gradient(1200px 500px at 50% -10%, rgba(212,169,58,.28), transparent 60%),linear-gradient(180deg,#f7efe1, #faf6f0);}
+  .hero-bg{position:absolute;inset:0;z-index:0;opacity:.18;background-size:cover;background-position:center;-webkit-mask-image:linear-gradient(180deg,#000 0%, transparent 90%);mask-image:linear-gradient(180deg,#000 0%, transparent 90%);}
+  .hero-inner{position:relative;z-index:1;max-width:860px;margin:0 auto;}
+  .hero .tag{display:inline-block;font-family:var(--serif);letter-spacing:.4em;font-size:14px;color:var(--gold);padding:6px 18px;border:1px solid rgba(184,134,11,.4);border-radius:999px;margin-bottom:26px;}
+  .hero h1{font-family:var(--serif);font-size:clamp(48px,8vw,92px);font-weight:900;letter-spacing:.12em;line-height:1.1;background:linear-gradient(180deg,#5a3a1f,#b8860b);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 0 rgba(255,255,255,.5);}
+  .hero .sub{margin-top:22px;font-size:18px;color:#6b5642;max-width:600px;margin-left:auto;margin-right:auto;}
+  .hero .ornament{margin:30px auto 0;width:240px;height:18px;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--gold);}
+  .hero .ornament::before,.hero .ornament::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);}
+
+  /* 板块 */
+  .section{padding:70px 24px;}
+  .section.alt{background:var(--paper-2);}
+  .wrap{max-width:1200px;margin:0 auto;}
+  .sec-head{display:flex;align-items:flex-end;gap:20px;margin-bottom:14px;flex-wrap:wrap;}
+  .sec-num{font-family:var(--serif);font-size:54px;font-weight:900;line-height:1;color:var(--accent);opacity:.9;}
+  .sec-title{font-family:var(--serif);font-size:34px;font-weight:800;letter-spacing:.06em;color:var(--ink);}
+  .sec-title small{display:block;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:.3em;color:var(--accent);margin-top:6px;text-transform:uppercase;}
+  .sec-desc{color:#7a6650;max-width:680px;margin:10px 0 30px;font-size:15px;}
+  .sec-cn{--accent:var(--c-cn);--accent-bg:var(--c-cn-bg);}
+  .sec-fg{--accent:var(--c-fg);--accent-bg:var(--c-fg-bg);}
+  .sec-ai{--accent:var(--c-ai);--accent-bg:var(--c-ai-bg);}
+  .sec-pj{--accent:var(--c-pj);--accent-bg:var(--c-pj-bg);}
+
+  /* 书籍网格 */
+  .books{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;}
+  @media(max-width:1100px){.books{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:720px){.books{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.books{grid-template-columns:1fr;}}
+
+  .book{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(61,40,23,.06);transition:transform .3s, box-shadow .3s;display:flex;flex-direction:column;position:relative;}
+  .book:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(61,40,23,.18);}
+
+  /* 五角星收藏按钮 */
+  .star-btn{position:absolute;top:10px;right:10px;z-index:5;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);cursor:pointer;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:transform .2s, background .2s;}
+  .star-btn:hover{transform:scale(1.12);}
+  .star-btn svg{width:22px;height:22px;fill:none;stroke:#999;stroke-width:2;transition:fill .2s, stroke .2s;}
+  .star-btn.active svg{fill:var(--star);stroke:var(--star);}
+  .star-btn.active{background:rgba(255,255,255,.98);}
+  .star-btn.toast{animation:pop .4s ease;}
+  @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.35);}100%{transform:scale(1);}}
+
+  /* CSS 书封 */
+  .cover{position:relative;aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:space-between;padding:20px 18px;color:#fff;overflow:hidden;background:var(--cv);cursor:pointer;}
+  .cover::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 2px,transparent 2px 14px),radial-gradient(120% 80% at 80% 0%,rgba(255,255,255,.18),transparent 55%);pointer-events:none;}
+  .cover::after{content:"";position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0));}
+  .cover .cv-tag{position:relative;font-family:var(--serif);font-size:12px;letter-spacing:.25em;opacity:.88;border:1px solid rgba(255,255,255,.5);padding:3px 9px;border-radius:4px;align-self:flex-start;}
+  .cover .cv-title{position:relative;font-family:var(--serif);font-weight:800;font-size:22px;line-height:1.2;letter-spacing:.03em;text-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer;}
+  .cover .cv-author{position:relative;font-size:12px;opacity:.92;letter-spacing:.06em;}
+
+  .book-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column;cursor:pointer;}
+  .book-body h3{font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:3px;}
+  .book-body .author{font-size:12.5px;color:var(--accent);margin-bottom:8px;}
+  .book-body p{font-size:13px;color:#6b5642;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .book-body .meta{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{font-size:11px;padding:3px 9px;border-radius:999px;background:var(--accent-bg);color:var(--accent);font-weight:600;}
+  .read-cta{margin-top:12px;font-size:13px;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px;}
+
+  /* 详情页 */
+  .detail{max-width:1000px;margin:0 auto;padding:40px 24px 80px;}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--ink);font-size:14px;cursor:pointer;font-family:inherit;padding:8px 0;margin-bottom:20px;opacity:.7;}
+  .back-btn:hover{opacity:1;}
+  .detail-grid{display:grid;grid-template-columns:280px 1fr;gap:40px;}
+  @media(max-width:720px){.detail-grid{grid-template-columns:1fr;}}
+  .detail-cover{position:sticky;top:90px;height:fit-content;}
+  .detail-cover .cover{aspect-ratio:3/4;font-size:28px;}
+  .detail-cover .cover .cv-title{font-size:32px;}
+  .detail-cover .star-btn{width:44px;height:44px;top:14px;right:14px;}
+  .detail-cover .star-btn svg{width:26px;height:26px;}
+  .detail-cover .cover-actions{margin-top:16px;display:flex;flex-direction:column;gap:10px;}
+  .read-link{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:10px;background:var(--paper-2);text-decoration:none;color:var(--ink);font-size:14px;transition:.2s;border:1px solid transparent;}
+  .read-link:hover{background:#fff;border-color:var(--gold-soft);box-shadow:var(--shadow);}
+  .read-link .src{font-weight:600;color:var(--accent);}
+  .read-link .go{font-size:18px;color:var(--gold);}
+  .read-link.primary{background:var(--c-cn);color:#fff;}
+  .read-link.primary .src,.read-link.primary .go{color:#fff;}
+  .read-link.primary:hover{background:#8e2e24;}
+
+  .detail-info h1{font-family:var(--serif);font-size:36px;line-height:1.2;margin-bottom:6px;}
+  .detail-info .d-author{font-size:16px;color:var(--accent);margin-bottom:6px;}
+  .detail-info .d-pub{font-size:13px;color:#9a8467;margin-bottom:18px;}
+  .detail-info .d-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+  .info-block{background:#fff;border-radius:14px;padding:22px 24px;margin-bottom:18px;box-shadow:var(--shadow);border:1px solid rgba(61,40,23,.05);}
+  .info-block h2{font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .info-block h2::before{content:"";width:4px;height:18px;background:var(--accent);border-radius:2px;}
+  .info-block p{color:#5a4632;font-size:15px;text-indent:2em;}
+  .toc-list{counter-reset:toc;list-style:none;}
+  .toc-list li{counter-increment:toc;padding:9px 0;border-bottom:1px dashed rgba(61,40,23,.12);font-size:14.5px;display:flex;gap:10px;color:#4a3825;}
+  .toc-list li:last-child{border-bottom:none;}
+  .toc-list li::before{content:counter(toc);min-width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0;transition:background .2s,color .2s;}
+  .toc-tip{font-size:12.5px;color:#7a6650;margin:-6px 0 14px;padding:8px 12px;background:var(--accent-bg);border-radius:8px;border-left:3px solid var(--accent);}
+  .toc-list li:hover{background:var(--accent-bg);padding-left:6px;padding-right:6px;margin:0 -6px;border-radius:6px;}
+  .toc-list li:hover::before{background:var(--accent);color:#fff;}
+  .toc-link{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:1;text-decoration:none;color:#4a3825;transition:color .2s;padding:2px 0;}
+  .toc-link:hover .toc-name{text-decoration:underline;color:var(--accent);}
+  .toc-name{flex:1;}
+  .toc-go{font-size:11.5px;color:var(--accent);font-weight:600;opacity:0;transition:opacity .2s;flex-shrink:0;white-space:nowrap;}
+  .toc-list li:hover .toc-go{opacity:1;}
+
+  /* 收藏库页 */
+  .lib-empty{text-align:center;padding:80px 24px;color:#9a8467;}
+  .lib-empty .ico{font-size:64px;margin-bottom:18px;opacity:.5;}
+  .lib-empty h3{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:8px;}
+  .lib-empty p{font-size:14px;margin-bottom:20px;}
+  .lib-stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
+  .stat-card{flex:1;min-width:140px;background:#fff;border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);}
+  .stat-card .n{font-family:var(--serif);font-size:32px;font-weight:800;color:var(--accent);}
+  .stat-card .l{font-size:13px;color:#9a8467;}
+
+  /* 弹窗(登录/注册) */
+  .modal-mask{position:fixed;inset:0;background:rgba(40,28,15,.55);backdrop-filter:blur(4px);z-index:100;display:none;place-items:center;padding:24px;}
+  .modal-mask.show{display:grid;}
+  .modal{background:var(--paper);border-radius:18px;padding:36px 32px;max-width:400px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.4);border:1px solid rgba(184,134,11,.3);}
+  .modal h2{font-family:var(--serif);font-size:26px;text-align:center;margin-bottom:6px;}
+  .modal .sub{text-align:center;font-size:13px;color:#9a8467;margin-bottom:24px;}
+  .modal .tab{display:flex;gap:8px;margin-bottom:20px;background:var(--paper-2);padding:5px;border-radius:10px;}
+  .modal .tab button{flex:1;padding:9px;border:none;background:transparent;cursor:pointer;font-family:inherit;font-size:14px;border-radius:7px;color:#7a6650;}
+  .modal .tab button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;color:#7a6650;margin-bottom:6px;}
+  .field input{width:100%;padding:11px 14px;border:1px solid rgba(184,134,11,.3);border-radius:9px;font-family:inherit;font-size:15px;background:#fff;color:var(--ink);}
+  .field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,134,11,.12);}
+  .modal .submit{width:100%;padding:12px;background:var(--c-cn);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:6px;transition:.2s;}
+  .modal .submit:hover{background:#8e2e24;}
+  .modal .err{color:#c0392b;font-size:13px;margin-top:8px;min-height:18px;text-align:center;}
+  .modal .close{position:absolute;top:14px;right:18px;font-size:24px;cursor:pointer;color:#9a8467;background:none;border:none;}
+  .modal-wrap{position:relative;}
+
+  /* Toast 提示 */
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:12px 24px;border-radius:999px;font-size:14px;z-index:200;opacity:0;transition:.3s;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* 页脚 */
+  footer{padding:50px 24px;text-align:center;background:linear-gradient(180deg,var(--paper),#efe4d2);border-top:1px solid rgba(184,134,11,.25);}
+  footer .ft-title{font-family:var(--serif);font-size:20px;letter-spacing:.3em;color:var(--ink);}
+  footer .ft-en{font-size:12px;letter-spacing:.35em;color:#9a8467;margin-top:8px;text-transform:uppercase;}
+  footer .ft-quote{margin-top:18px;font-family:var(--serif);color:#7a6650;font-size:15px;}
+  footer .copy{margin-top:20px;font-size:12px;color:#a89376;}
+
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s;}
+  .reveal.in{opacity:1;transform:none;}
+  .hidden{display:none!important;}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}.reveal{opacity:1;transform:none;}}
+
+  /* 站内阅读器（护眼背景） */
+  .reader{position:fixed;inset:0;z-index:100;background:#f5ecd9;display:flex;flex-direction:column;}
+  .reader-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px;background:#ece0c6;border-bottom:1px solid rgba(61,40,23,.14);flex-shrink:0;}
+  .reader-hd{font-family:var(--serif);font-size:15px;color:var(--ink);flex:1;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .reader-bk{font-weight:700;}
+  .reader-sep{margin:0 8px;opacity:.5;}
+  .reader-ch-now{color:#6b5642;}
+  .rbtn{border:1px solid rgba(61,40,23,.25);background:rgba(255,255,255,.5);color:var(--ink);padding:6px 14px;border-radius:999px;cursor:pointer;font-size:13px;font-family:inherit;transition:.2s;}
+  .rbtn:hover:not(:disabled){background:var(--gold);color:#fff;border-color:var(--gold);}
+  .rbtn:disabled{opacity:.4;cursor:not-allowed;}
+  .rtools{display:flex;gap:6px;}
+  .reader-body{flex:1;display:flex;overflow:hidden;min-height:0;}
+  .reader-toc{width:260px;background:#efe4cb;border-right:1px solid rgba(61,40,23,.1);overflow-y:auto;padding:18px 14px;flex-shrink:0;}
+  .reader-toc h3{font-family:var(--serif);font-size:16px;margin-bottom:12px;color:var(--ink);text-align:center;border-bottom:1px solid rgba(61,40,23,.15);padding-bottom:10px;}
+  .reader-toc ol{list-style:none;display:flex;flex-direction:column;gap:2px;}
+  .reader-toc li{padding:8px 12px;font-size:13px;cursor:pointer;border-radius:8px;color:#5a4632;transition:.2s;line-height:1.5;}
+  .reader-toc li:hover{background:rgba(184,134,11,.18);}
+  .reader-toc li.cur{background:var(--gold-soft);color:#fff;font-weight:600;}
+  .reader-content{flex:1;overflow-y:auto;padding:50px 9% 70px;background:#f5ecd9;font-size:19px;line-height:2;color:#3d2817;font-family:var(--serif);}
+  .reader-ch{font-family:var(--serif);font-size:26px;margin-bottom:28px;text-align:center;color:var(--ink);padding-bottom:18px;border-bottom:1px solid rgba(61,40,23,.18);}
+  .reader-content p{margin-bottom:1.4em;text-indent:2em;}
+  .reader-end{text-align:center;margin-top:40px;color:#9a8467;font-size:14px;letter-spacing:.3em;}
+  .reader-loading,.reader-fallback,.reader-pay{text-align:center;padding:80px 20px;color:#7a6650;font-size:15px;}
+  .reader-link{display:inline-block;margin-top:18px;padding:10px 24px;background:var(--c-cn);color:#fff;border-radius:999px;text-decoration:none;font-weight:600;}
+  .reader-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px;background:#ece0c6;border-top:1px solid rgba(61,40,23,.14);flex-shrink:0;}
+  .reader-progress{font-size:13px;color:#7a6650;font-family:var(--serif);}
+  /* 锁章节 */
+  .toc-link.locked{cursor:pointer;}
+  .toc-link.locked .lock-ico{margin-right:8px;font-size:13px;filter:saturate(.4);}
+  .toc-link.locked .toc-go{color:#b8860b;}
+  .toc-link.locked:hover .lock-ico{filter:none;}
+  /* 付费提示弹窗 */
+  .pay-modal-bg{position:fixed;inset:0;z-index:200;background:rgba(61,40,23,.55);display:grid;place-items:center;padding:20px;animation:fadeIn .2s;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .pay-modal{background:linear-gradient(180deg,#faf6f0,#f3ece0);border-radius:18px;padding:36px 32px;max-width:440px;width:100%;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.35);border:1px solid rgba(184,134,11,.3);}
+  .pay-lock{font-size:52px;margin-bottom:14px;animation:shake 1.2s ease-in-out infinite;}
+  @keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+  .pay-modal h3{font-family:var(--serif);font-size:21px;color:var(--ink);margin-bottom:12px;}
+  .pay-ch{color:var(--c-cn);font-weight:600;margin-bottom:10px;font-size:15px;}
+  .pay-desc{color:#6b5642;font-size:13.5px;line-height:1.9;margin-bottom:22px;}
+  .pay-actions{display:flex;flex-direction:column;gap:10px;align-items:center;}
+  .pay-go{display:inline-block;padding:13px 32px;background:var(--c-cn);color:#fff;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 4px 14px rgba(176,58,46,.35);}
+  .pay-go:hover{background:#8e2e24;}
+  .pay-cancel{padding:10px 26px;background:transparent;border:1px solid rgba(61,40,23,.3);border-radius:999px;cursor:pointer;color:var(--ink);font-family:inherit;font-size:14px;}
+  .pay-cancel:hover{background:rgba(61,40,23,.08);}
+  .pay-note{margin-top:18px;font-size:12px;color:#9a8467;letter-spacing:.1em;}
+</style>
+</head>
+<body>
+
+<!-- 导航 -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand" onclick="go('home')"><span class="seal">品</span>品鉴书香</div>
+    <div class="nav-right">
+      <div class="nav-links" id="navLinks">
+        <a onclick="go('home','cn')">中国书目</a>
+        <a onclick="go('home','fg')">外国书目</a>
+        <a onclick="go('home','ai')">智能书目</a>
+        <a onclick="go('home','pj')">盘锦文化</a>
+      </div>
+      <button class="nav-btn" id="libBtn" onclick="go('library')">⭐ 我的收藏</button>
+      <div id="userArea"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- 页面容器 -->
+<div id="app"></div>
+
+<!-- 页脚 -->
+<footer>
+  <div class="ft-title">品 鉴 书 香</div>
+  <div class="ft-en">Savor the Fragrance of Books</div>
+  <div class="ft-quote">"书犹药也，善读之可以医愚。" —— 刘向</div>
+  <div class="copy">© 品鉴书香 · 阅读推广展示页</div>
+</footer>
+
+<!-- 登录/注册弹窗 -->
+<div class="modal-mask" id="authMask">
+  <div class="modal-wrap">
+    <button class="close" onclick="closeAuth()">×</button>
+    <div class="modal">
+      <h2 id="authTitle">登录</h2>
+      <div class="sub">登录后即可收藏心仪的书籍</div>
+      <div class="tab">
+        <button id="tabLogin" class="on" onclick="switchAuth('login')">登 录</button>
+        <button id="tabReg" onclick="switchAuth('reg')">注 册</button>
+      </div>
+      <div class="field"><label>用户名</label><input id="authUser" placeholder="2-16 位字符" autocomplete="off"></div>
+      <div class="field"><label>密码</label><input id="authPass" type="password" placeholder="至少 4 位" autocomplete="off"></div>
+      <div class="err" id="authErr"></div>
+      <button class="submit" onclick="submitAuth()">确 定</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 书目数据（必须在主逻辑前加载） -->
+<script src="data.js?v=2"></script>
+
+<script>
+/* ============== 数据(由 data.js 注入) ============== */
+let BOOKS = window.__BOOKS__ || [];
+const SECTIONS = [
+  { id:'cn', num:'壹', title:'中国书目推荐', en:'Chinese Literature', desc:'从古典名著到当代力作，感受汉语之美与东方哲思，在千年文脉中寻得心灵归宿。', cls:'sec-cn' },
+  { id:'fg', num:'贰', title:'外国书目推荐', en:'World Literature', desc:'跨越语言与文化的疆界，在异域作家的笔下，看见人类共通的爱、孤独与抗争。', cls:'sec-fg' },
+  { id:'ai', num:'叁', title:'人工智能书目推荐', en:'Thinking & Systems', desc:'从系统思维到颠覆性创新，构建智能时代所需的认知框架与思想根基。', cls:'sec-ai' },
+  { id:'pj', num:'肆', title:'盘锦属地文化', en:'Panjin Local Culture', desc:'辽河入海，红滩如火。于黑土与鹤鸣间，读一座湿地之都的乡土记忆。', cls:'sec-pj' }
+];
+
+/* ============== 用户系统(localStorage) ============== */
+const Store = {
+  getUsers(){ return JSON.parse(localStorage.getItem('pxsx_users')||'{}'); },
+  setUsers(u){ localStorage.setItem('pxsx_users', JSON.stringify(u)); },
+  getCur(){ return JSON.parse(localStorage.getItem('pxsx_cur')||'null'); },
+  setCur(u){ localStorage.setItem('pxsx_cur', JSON.stringify(u)); },
+  logout(){ localStorage.removeItem('pxsx_cur'); },
+  favsKey(){ const u=this.getCur(); return u? 'pxsx_fav_'+u.user : null; },
+  getFavs(){ const k=this.favsKey(); return k? JSON.parse(localStorage.getItem(k)||'[]') : []; },
+  setFavs(arr){ const k=this.favsKey(); if(k) localStorage.setItem(k, JSON.stringify(arr)); },
+  isFav(id){ return this.getFavs().includes(id); },
+  toggleFav(id){
+    if(!this.getCur()){ openAuth(); showToast('请先登录后再收藏'); return false; }
+    let f=this.getFavs();
+    if(f.includes(id)){ f=f.filter(x=>x!==id); this.setFavs(f); showToast('已取消收藏'); return false; }
+    else { f.push(id); this.setFavs(f); showToast('⭐ 已加入收藏库'); return true; }
+  }
+};
+
+/* ============== 路由 ============== */
+function go(page, anchor){
+  const hash = anchor? `#/${page}/${anchor}` : `#/${page}`;
+  location.hash = hash;
+}
+function parseHash(){
+  let h = location.hash.replace(/^#/,'') || '/home';
+  const parts = h.split('/').filter(Boolean); // ['', 'home', 'cn'] -> ['home','cn']
+  return { page: parts[0]||'home', arg: parts[1]||null };
+}
+window.addEventListener('hashchange', render);
+
+/* ============== 渲染 ============== */
+function render(){
+  const {page, arg} = parseHash();
+  const app = document.getElementById('app');
+  window.scrollTo({top:0, behavior:'instant'});
+  if(page==='home') renderHome(app, arg);
+  else if(page==='book') renderBook(app, arg);
+  else if(page==='library') renderLibrary(app);
+  else if(page==='read'){
+    const parts = (location.hash.replace(/^#/,'')).split('/').filter(Boolean);
+    const bid = parts[1]||null, ci = parseInt(parts[2]||'0',10)||0;
+    const b = BOOKS.find(x=>x.id===bid);
+    if(b && b.isFree) renderReader(app, b, ci);
+    else renderHome(app, null);
+  }
+  else renderHome(app, null);
+  refreshNavActive(arg);
+}
+
+function refreshNavActive(anchor){
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    const target = a.getAttribute('onclick').match(/'home','(\w+)'/);
+    a.style.opacity = (target && target[1]===anchor) ? '1' : '.65';
+  });
+}
+
+/* ---- 主页 ---- */
+function renderHome(app, anchor){
+  let heroBgStyle = '';
+  const heroPrompt = encodeURIComponent("ancient Chinese study room with stacked books, scrolls, ink and brush, warm golden light, ink wash painting style, serene scholarly atmosphere");
+  heroBgStyle = `style="background-image:url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${heroPrompt}&image_size=landscape_16_9')"`;
+
+  let html = `
+  <header class="hero">
+    <div class="hero-bg" ${heroBgStyle}></div>
+    <div class="hero-inner">
+      <span class="tag">阅 · 品 · 悟</span>
+      <h1>品鉴书香</h1>
+      <p class="sub">于纸墨间阅山河，于字句中见天地。一份跨越中西、贯通古今与未来的阅读地图。</p>
+      <div class="ornament">❖</div>
+    </div>
+  </header>`;
+
+  SECTIONS.forEach(sec=>{
+    const books = BOOKS.filter(b=>b.sec===sec.id);
+    html += `
+    <section class="section ${sec.cls} ${sec.id==='fg'||sec.id==='pj'?'alt':''}" id="${sec.id}">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="sec-num">${sec.num}</div>
+          <div class="sec-title">${sec.title}<small>${sec.en}</small></div>
+        </div>
+        <p class="sec-desc reveal">${sec.desc}</p>
+        <div class="books">
+          ${books.map(b=>bookCard(b)).join('')}
+        </div>
+      </div>
+    </section>`;
+  });
+
+  app.innerHTML = html;
+  bindReveal();
+  refreshStars();
+  if(anchor){
+    setTimeout(()=>{ const el=document.getElementById(anchor); if(el) el.scrollIntoView({behavior:'smooth'}); }, 60);
+  }
+}
+
+function bookCard(b){
+  return `
+  <article class="book reveal">
+    <button class="star-btn ${Store.isFav(b.id)?'active':''}" data-id="${b.id}" onclick="onStar(event,'${b.id}')" title="收藏" aria-label="收藏">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    </button>
+    <div class="cover" style="--cv:${b.cover}" onclick="go('book','${b.id}')">
+      <span class="cv-tag">${b.tag}</span>
+      <div>
+        <div class="cv-title">${b.title}</div>
+        <div class="cv-author">${b.author}</div>
+      </div>
+    </div>
+    <div class="book-body" onclick="go('book','${b.id}')">
+      <h3>${b.title}</h3>
+      <div class="author">${b.author}</div>
+      <p>${b.brief}</p>
+      <div class="meta">${b.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+      <span class="read-cta">阅读详情 →</span>
+    </div>
+  </article>`;
+}
+
+/* ---- 详情页 ---- */
+// 智能选择"可直接阅读"的源：跳过仅信息页/购书/评介类源
+function pickReadUrl(b){
+  if(!b.links || !b.links.length) return '#';
+  const block = /信息页|豆瓣|购书|详情|评介|访谈|创作谈|导读|解读|节目/;
+  const lk = b.links.find(l => !block.test((l.source||'')+(l.note||'')));
+  return (lk || b.links[0]).url;
+}
+function renderBook(app, id){
+  const b = BOOKS.find(x=>x.id===id);
+  if(!b){ app.innerHTML = '<div class="lib-empty"><div class="ico">📕</div><h3>未找到此书</h3><button class="nav-btn" onclick="go(\'home\')">返回首页</button></div>'; return; }
+  const readUrl = pickReadUrl(b);
+  const links = (b.links||[]).map((l,i)=>`
+    <a href="${l.url}" target="_blank" rel="noopener" class="read-link ${i===0?'primary':''}">
+      <span><span class="src">${l.source}</span> · ${l.note||'在线阅读'}</span>
+      <span class="go">↗</span>
+    </a>`).join('');
+
+  app.innerHTML = `
+  <div class="detail">
+    <button class="back-btn" onclick="history.back()">← 返回</button>
+    <div class="detail-grid">
+      <div class="detail-cover">
+        <div class="cover" style="--cv:${b.cover}">
+          <button class="star-btn ${Store.isFav(b.id)?'active':''}" onclick="onStar(event,'${b.id}')">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </button>
+          <span class="cv-tag">${b.tag}</span>
+          <div>
+            <div class="cv-title">${b.title}</div>
+            <div class="cv-author">${b.author}</div>
+          </div>
+        </div>
+        <div class="cover-actions">
+          ${links || '<div style="color:#9a8467;font-size:13px;padding:12px;">暂无在线阅读源</div>'}
+        </div>
+      </div>
+      <div class="detail-info">
+        <h1>${b.title}</h1>
+        <div class="d-author">著者：${b.author}</div>
+        <div class="d-pub">${b.publisher||''}</div>
+        <div class="d-tags">${b.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+        <div class="info-block">
+          <h2>内容简介</h2>
+          <p>${b.intro}</p>
+        </div>
+        <div class="info-block">
+          <h2>目录</h2>
+          <p class="toc-tip">${b.isFree ? '📚 本书已进入公有领域，点击章节即可在站内免费阅读全文' : '🔒 部分章节为正版付费内容，点击带锁章节可查看付费提示并前往正版平台阅读'}</p>
+          <ol class="toc-list">
+            ${(b.toc||[]).map((t,i)=> b.isFree
+              ? `<li><a class="toc-link" href="javascript:void(0)" onclick="openReader('${b.id}',${i})"><span class="toc-name">${t}</span><span class="toc-go">↗ 阅读</span></a></li>`
+              : `<li><a class="toc-link locked" href="javascript:void(0)" onclick="showPayTip('${b.id}',${i})"><span class="lock-ico">🔒</span><span class="toc-name">${t}</span><span class="toc-go">付费</span></a></li>`
+            ).join('')}
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  refreshStars();
+}
+
+/* ---- 站内阅读器（护眼背景 / 公有领域全文） ---- */
+function openReader(bookId, chapterIndex){
+  const b = BOOKS.find(x=>x.id===bookId);
+  if(!b) return;
+  if(!b.isFree){ showPayTip(bookId, chapterIndex); return; }
+  const idx = Math.max(0, Math.min(chapterIndex, (b.toc||[]).length-1));
+  renderReader(document.getElementById('app'), b, idx);
+  location.hash = `#/read/${bookId}/${idx}`;
+}
+function renderReader(app, b, idx){
+  const total = (b.toc||[]).length;
+  const ch = b.toc[idx] || '';
+  app.innerHTML = `
+  <div class="reader">
+    <div class="reader-top">
+      <button class="rbtn" onclick="history.back()">← 返回详情</button>
+      <div class="reader-hd"><span class="reader-bk">${b.title}</span><span class="reader-sep">·</span><span class="reader-ch-now">${ch}</span></div>
+      <div class="rtools">
+        <button class="rbtn" onclick="readerFont(-1)" title="缩小字号">A-</button>
+        <button class="rbtn" onclick="readerFont(1)" title="放大字号">A+</button>
+        <button class="rbtn" onclick="readerBg()" title="切换背景色">🌙</button>
+      </div>
+    </div>
+    <div class="reader-body">
+      <aside class="reader-toc" id="readerToc">
+        <h3>目录</h3>
+        <ol>
+          ${(b.toc||[]).map((t,i)=>`<li class="${i===idx?'cur':''}" onclick="openReader('${b.id}',${i})">${t}</li>`).join('')}
+        </ol>
+      </aside>
+      <div class="reader-content" id="readerContent">
+        <div class="reader-loading">正文加载中…</div>
+      </div>
+    </div>
+    <div class="reader-foot">
+      <button class="rbtn" onclick="openReader('${b.id}',${idx-1})" ${idx===0?'disabled':''}>← 上一章</button>
+      <span class="reader-progress">第 ${idx+1} / ${total} 章</span>
+      <button class="rbtn" onclick="openReader('${b.id}',${idx+1})" ${idx===total-1?'disabled':''}>下一章 →</button>
+    </div>
+  </div>`;
+  loadChapterContent(b, idx);
+  setTimeout(()=>{ const c=document.querySelector('#readerToc li.cur'); if(c&&c.scrollIntoView) c.scrollIntoView({block:'center'}); },60);
+}
+function loadChapterContent(b, idx){
+  const el = document.getElementById('readerContent');
+  if(!el) return;
+  if(!b.isFree){ el.innerHTML = '<div class="reader-pay">该章节为正版付费内容</div>'; return; }
+  const url = `books/${b.id}/${idx+1}.txt`;
+  fetch(url).then(r=>{ if(!r.ok) throw 0; return r.text(); })
+  .then(txt=>{
+    const paras = txt.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    el.innerHTML = `<h2 class="reader-ch">${b.toc[idx]}</h2>${paras.map(p=>`<p>${p}</p>`).join('')}<div class="reader-end">— 本章完 —</div>`;
+    el.scrollTop = 0;
+  })
+  .catch(()=>{
+    el.innerHTML = `<div class="reader-fallback"><p>本章正文尚未本地化</p><a href="${pickReadUrl(b)}" target="_blank" rel="noopener" class="reader-link">↗ 前往在线阅读</a></div>`;
+  });
+}
+window.readerFont = function(delta){
+  const el = document.getElementById('readerContent');
+  if(!el) return;
+  const cur = parseFloat(getComputedStyle(el).fontSize) || 19;
+  el.style.fontSize = Math.max(15, Math.min(30, cur+delta)) + 'px';
+};
+window.readerBgIdx = 0;
+window.readerBg = function(){
+  const bgs = ['#f5ecd9','#e8eddf','#f0eee5','#1f2421'];
+  const fgs = ['#3d2817','#2c3a2c','#3a3530','#c8c8c0'];
+  window.readerBgIdx = (window.readerBgIdx+1) % bgs.length;
+  const r = document.querySelector('.reader'); const c = document.getElementById('readerContent');
+  if(r) r.style.background = bgs[window.readerBgIdx];
+  if(c) c.style.color = fgs[window.readerBgIdx];
+};
+function showPayTip(bookId, chapterIndex){
+  const b = BOOKS.find(x=>x.id===bookId);
+  if(!b) return;
+  const url = pickReadUrl(b);
+  const ch = b.toc[chapterIndex] || '';
+  const old = document.querySelector('.pay-modal-bg'); if(old) old.remove();
+  const modal = document.createElement('div');
+  modal.className = 'pay-modal-bg';
+  modal.innerHTML = `
+    <div class="pay-modal">
+      <div class="pay-lock">🔒</div>
+      <h3>该章节为正版付费内容</h3>
+      <p class="pay-ch">《${b.title}》— ${ch}</p>
+      <p class="pay-desc">${b.author} · ${b.publisher||''}<br>本书受版权保护，无法在站内免费阅读全文。<br>请前往正版平台阅读完整章节。</p>
+      <div class="pay-actions">
+        <a href="${url}" target="_blank" rel="noopener" class="pay-go">↗ 前往正版平台阅读</a>
+        <button class="pay-cancel" onclick="this.closest('.pay-modal-bg').remove()">稍后再说</button>
+      </div>
+      <p class="pay-note">支持正版，尊重创作者的劳动与版权</p>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e=>{ if(e.target===modal) modal.remove(); });
+}
+
+/* ---- 收藏库页 ---- */
+function renderLibrary(app){
+  if(!Store.getCur()){
+    app.innerHTML = `<div class="lib-empty"><div class="ico">🔒</div><h3>请先登录</h3><p>登录后即可查看您的个人收藏库</p><button class="nav-btn primary" onclick="openAuth()">立即登录</button></div>`;
+    return;
+  }
+  const favs = Store.getFavs();
+  const favBooks = favs.map(id=>BOOKS.find(b=>b.id===id)).filter(Boolean);
+  if(favBooks.length===0){
+    app.innerHTML = `<div class="lib-empty"><div class="ico">⭐</div><h3>收藏库还是空的</h3><p>去书栏里找到喜欢的书，点击侧边五角星即可收藏</p><button class="nav-btn primary" onclick="go('home')">去逛书栏</button></div>`;
+    return;
+  }
+  const bySec = SECTIONS.map(s=>({s, books: favBooks.filter(b=>b.sec===s.id)})).filter(x=>x.books.length);
+
+  let html = `<div class="section" style="padding-top:50px;">
+    <div class="wrap">
+      <div class="sec-head"><div class="sec-num" style="color:var(--gold)">⭐</div><div class="sec-title">我的收藏库<small>My Favorites</small></div></div>
+      <p class="sec-desc">收藏共 ${favBooks.length} 本，按专栏分组展示。</p>
+      <div class="lib-stats">
+        ${SECTIONS.map(s=>`<div class="stat-card ${s.cls}"><div class="n">${favBooks.filter(b=>b.sec===s.id).length}</div><div class="l">${s.title}</div></div>`).join('')}
+      </div>
+      ${bySec.map(({s,books})=>`
+        <div style="margin-top:30px;">
+          <h3 style="font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:16px;">${s.num} · ${s.title}</h3>
+          <div class="books">${books.map(b=>bookCard(b)).join('')}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+  app.innerHTML = html;
+  bindReveal();
+  refreshStars();
+}
+
+/* ============== 交互 ============== */
+function onStar(e, id){
+  e.stopPropagation();
+  const ok = Store.toggleFav(id);
+  const btns = document.querySelectorAll(`.star-btn[data-id="${id}"]`);
+  btns.forEach(btn=>{
+    btn.classList.toggle('active', ok);
+    btn.classList.add('toast');
+    setTimeout(()=>btn.classList.remove('toast'), 400);
+  });
+  // 若在收藏库页且取消收藏，刷新
+  if(!ok && parseHash().page==='library'){
+    setTimeout(render, 350);
+  }
+}
+function refreshStars(){
+  document.querySelectorAll('.star-btn').forEach(btn=>{
+    const id = btn.dataset.id;
+    if(id) btn.classList.toggle('active', Store.isFav(id));
+  });
+}
+
+/* 滚动入场 */
+function bindReveal(){
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}
+
+/* ---- 登录/注册 ---- */
+let authMode='login';
+function openAuth(){ document.getElementById('authMask').classList.add('show'); }
+function closeAuth(){ document.getElementById('authMask').classList.remove('show'); }
+function switchAuth(m){
+  authMode=m;
+  document.getElementById('tabLogin').classList.toggle('on', m==='login');
+  document.getElementById('tabReg').classList.toggle('on', m==='reg');
+  document.getElementById('authTitle').textContent = m==='login'?'登录':'注册';
+  document.getElementById('authErr').textContent='';
+}
+function submitAuth(){
+  const u = document.getElementById('authUser').value.trim();
+  const p = document.getElementById('authPass').value;
+  const err = document.getElementById('authErr');
+  if(u.length<2 || u.length>16){ err.textContent='用户名需 2-16 位'; return; }
+  if(p.length<4){ err.textContent='密码至少 4 位'; return; }
+  const users = Store.getUsers();
+  if(authMode==='reg'){
+    if(users[u]){ err.textContent='该用户名已被注册'; return; }
+    users[u] = { user:u, pass:p, since:Date.now() };
+    Store.setUsers(users);
+    Store.setCur(users[u]);
+    closeAuth(); showToast('🎉 注册成功，已自动登录'); renderUserArea(); render();
+  } else {
+    if(!users[u]){ err.textContent='用户不存在，请先注册'; return; }
+    if(users[u].pass!==p){ err.textContent='密码错误'; return; }
+    Store.setCur(users[u]);
+    closeAuth(); showToast('👋 欢迎回来，'+u); renderUserArea(); render();
+  }
+}
+function renderUserArea(){
+  const area = document.getElementById('userArea');
+  const u = Store.getCur();
+  if(u){
+    area.innerHTML = `<span class="user-chip" onclick="userMenu()" title="点击退出登录">
+      <span class="avatar">${u.user[0].toUpperCase()}</span>${u.user}
+    </span>`;
+  } else {
+    area.innerHTML = `<button class="nav-btn primary" onclick="openAuth()">登录 / 注册</button>`;
+  }
+}
+function userMenu(){
+  if(confirm('是否退出登录？')){ Store.logout(); showToast('已退出登录'); renderUserArea(); render(); }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* 关闭弹窗：点遮罩或 Esc */
+document.getElementById('authMask').addEventListener('click', e=>{ if(e.target.id==='authMask') closeAuth(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAuth(); });
+
+/* 启动 */
+renderUserArea();
+if(!BOOKS.length){
+  document.getElementById('app').innerHTML = '<div class="lib-empty"><div class="ico">📚</div><h3>书目加载中…</h3></div>';
+}
+render();
+</script>
+</body>
+</html>
